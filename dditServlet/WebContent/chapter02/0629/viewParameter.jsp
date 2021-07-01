@@ -3,6 +3,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%
+	//form.jsp에서 요청한 페이지
+
 	//요청 파라미터의 캐릭터 인코딩을 UTF-8로 지정
 	request.setCharacterEncoding("UTF-8");
 %>

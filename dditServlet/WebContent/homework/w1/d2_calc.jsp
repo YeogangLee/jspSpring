@@ -32,30 +32,39 @@
 		var varA = document.getElementById("a");
 		var sik = document.getElementById("sik");
 		var varB = document.getElementById("b");
-
+		var expression = document.getElementById("txtExpression");
+		var valExp = "";
+		
 		//첫 번째 값이 없을 때 첫 번째 값을 입력
 		if(varA.value == "") {
 			if(b == 0) { //숫자일 경우만 체크(0:숫자, 1:연산자, 2:실행(=), 3:초기화)
 				varA.value = a;
+				valExp = $("#txtExpression").val();
+				$("#txtExpression").val(valExp + a + " ");
 			}
 		}else { //첫 번째 값이 있을 때 두 번째 값으로 입력
 			if(b == 0) { //숫자일 경우만 체크(0:숫자, 1:연산자, 2:실행(=), 3:초기화)
 				varB.value = a;			
+				valExp = $("#txtExpression").val();
+				$("#txtExpression").val(valExp + a + " ");
 			}
 		}
 		
 		//연산자 입력
 		if(b == 1) {
 			sik.value = a;
+			valExp = $("#txtExpression").val();
+			$("#txtExpression").val(valExp + a + " ");
 		}
 		
 		// = 입력
 		if(b == 2) {
-			
 			if(!fn_chk()) {
 				return;
 				
 			}else { //빈값이 없을시 실행
+				valExp = $("#txtExpression").val();
+				$("#txtExpression").val(valExp + "=");
 				
 				var param = {
 					valA: $("#a").val()
@@ -92,6 +101,7 @@
 			$("#sik").val("");
 			$("#b").val("");
 			$("#txtResult").val("");
+			$("#txtExpression").val("");
 		}
 			
 	}
@@ -137,9 +147,8 @@
 		<input type="hidden" name="sik" id="sik" value="" />
 		<input type="hidden" name="b" id="b" value="" />
 		<br>
-		
-<%-- 		<input type="text" name="txtResult" id="txtResult" value="<%=result %>" --%>
-<!-- 				style="width: 170px; text-align: right;"> -->
+		<input type="text" name="txtExpression" id="txtExpression" value=""
+				style="width: 170px"><br>
 		<input type="text" name="txtResult" id="txtResult" value=""
 				style="width: 170px; text-align: right;">
 		<br>
