@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
   <display-name>dditServlet</display-name>
+  <!-- web.xml : 웹 어플리케이션(ex.dditServlet)을 위한 설정 정보를 담고 있는 파일 -->
+  <!-- web.xml을 변경하고 난 뒤 웹 컨테이너(tomcat)가
+  	      웹 애플리케이션을 (자동으로) 다시 시작해야만 설정이 반영 -->
+  	      
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
     <welcome-file>index.htm</welcome-file>
@@ -9,4 +13,35 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
+  
+  <context-param>
+  	<description>로깅 여부</description>
+  	<param-name>logEnabled</param-name>
+  	<param-value>true</param-value>
+  </context-param>
+  
+  <context-param>
+  	<description>디버깅 레벨</description>
+  	<param-name>debugLevel</param-name>
+  	<param-value>5</param-value>
+  </context-param>
+  
+  <!-- 404에러 : 페이지 없는 오류 처리 -->
+  <error-page>
+  	<error-code>404</error-code>
+  	<location>/error_0705/error404.jsp</location>
+  </error-page>
+    
+  <!-- 500에러 : 소스 코드 내부 오류 처리 -->
+  <error-page>
+  	<error-code>500</error-code>
+  	<location>/error_0705/error500.jsp</location>
+  </error-page>
+  
+  <!-- exception 타입별로 에러 페이지 지정 -->
+  <error-page>
+  	<exception-type>java.lang.NullPointerException</exception-type>
+  	<location>/error_0705/errorNullPointer.jsp</location>
+  </error-page>
+    
 </web-app>
