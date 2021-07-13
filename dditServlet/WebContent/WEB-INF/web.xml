@@ -43,5 +43,15 @@
   	<exception-type>java.lang.NullPointerException</exception-type>
   	<location>/error_0705/errorNullPointer.jsp</location>
   </error-page>
-    
+  
+  <!-- session 유효시간 설정(분단위) ex) 50분으로 설정 -->
+  <session-config>
+  	<session-timeout>50</session-timeout>
+  </session-config>
+  
+  
+  
+  
+  
+  
 </web-app>

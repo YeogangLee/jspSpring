@@ -1,5 +1,9 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@page import="util.Cookies"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%
+Cookies cookies = new Cookies(request);
+
+%>
 <table border="0" style="width:100%;" cellspacing="0">
 <tr style="height:50px;">
 	<td style="width:10%;">
@@ -19,7 +23,16 @@
 		</div>
 	</td>
 	<td style="width:30%;text-align:right;">
+<%
+	if(cookies.exists("id")){
+		out.print(cookies.getValue("id") + "님 로그인되었습니다.&emsp;");
+		out.print("로그아웃");
+	}else {		
+%>
 		<input type="button" value="로그인" onclick="fn_login()" style="margin-right:10px;" />
+<%
+	}
+%>
 	</td>
 </tr>
 </table>
