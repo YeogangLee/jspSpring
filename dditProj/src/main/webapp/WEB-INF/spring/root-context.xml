@@ -38,7 +38,7 @@
 	</bean>
 	
 	<!-- 
-		결과적으로, 작성 순서대로 생성자에 이용되게 된다.
+		결과적으로, 작성 순서대로 다음 객체의 생성자에 이용된다.
 		dataSource -> sqlSessionFactory -> sqlSessionTemplate
 	 -->
 </beans>
