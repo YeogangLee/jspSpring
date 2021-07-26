@@ -4,10 +4,18 @@
 <html>
 <head>
 	<title>일기</title>
+	<script type="text/javascript">
+		
+		
+	</script>
 </head>
 <body>
-	날짜 : <a href="/detail">${date}</a>
-	<input type="hidden" name="date" value="${date}"/>
-	<input type="text" name="text" value="설마 이거?"/>
+<%-- 	날짜 : <a href="/detail">${date}</a> --%>
+<%-- 	<input type="hidden" name="date" value="${date}"/> --%>
+	
+	<form method="post" action="/detail" id="fmDate">
+		날짜 : <a href="#" onclick="document.getElementById('fmDate').submit();">${date}</a>
+		<input type="hidden" name="date" value="${date}"/>
+	</form>
 </body>
 </html>

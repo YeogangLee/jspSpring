@@ -49,9 +49,39 @@
   	<session-timeout>50</session-timeout>
   </session-config>
   
+  <!-- 웹 어플리케이션 시작 시(톰캣 기동) JDBC 드라이버를 로딩하므로
+  	      개별 JSP는 JDBC 드라이버를 로딩하지 않아도 됨. 
+   -->
+  <servlet>
+  	<servlet-name>oracleDriverLoader</servlet-name>
+  	<servlet-class>jdbc.OracleDriverLoader</servlet-class>
+  	<load-on-startup>1</load-on-startup>
+  </servlet>
   
+  <!-- 웹 어플리케이션이 시작될 때(tomcat 기동/재기동) 
+  	   DBCPInit 서블릿 클래스가 자동으로 시작되고 init()메서드가 호출됨
+  -->
+  <servlet>
+  	<servlet-name>DBCPInit</servlet-name>
+  	<servlet-class>jdbc.DBCPInit</servlet-class>
+  	<load-on-startup>1</load-on-startup>
+  </servlet>
   
-  
-  
-  
+  <!-- 서블릿으로 사용할 클래스를 등록 -->
+  <servlet>
+  	<servlet-name>now</servlet-name>
+  	<servlet-class>chapter17.NowServlet</servlet-class>
+  </servlet>
+  <!-- 
+  	서블릿과 URL 간의 매핑
+  	NowServlet을 /now 경로에 매핑
+   -->
+  <servlet-mapping>
+	<servlet-name>now</servlet-name>
+	<url-pattern>/now</url-pattern>
+  </servlet-mapping>
+  <!-- 
+  	서블릿 최초 요청시 서블릿 객체를 생성한다.
+  	그 이후부터는 앞서 생성한 서블릿 객체를 그대로 사용.
+   -->
 </web-app>

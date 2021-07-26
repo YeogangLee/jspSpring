@@ -22,6 +22,7 @@
 	<br />
 	<a href="/gugu">구구단</a><br/>
 	<a href="/point">성적 확인</a><br/>
+	<a href="/move">redirect</a><br/>
 <!-- 
 	form 태그 안의 내용이 서버로 전송됨.
 	name 속성을 가져야 함. name 속성은 키, value 속성은 값.

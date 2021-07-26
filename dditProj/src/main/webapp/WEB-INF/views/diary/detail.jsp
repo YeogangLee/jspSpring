@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>여기 날짜 파라미터 가능?</title>
+	<title>${date}</title>
 </head>
 <body>
 	오늘의 일기<br/>
