@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace : .xml 파일은 여러 개 생성되므로 이를 구별하는 용도이다. -->
+<mapper namespace="book">
+	<!-- 
+		insert 태그 : MyBatis에서 데이터 입력(insert)을 나타내는 태그 
+		id : 네임스페이스 안에서 SQL을 구분하는 유일한(Unique) 식별자 역할을 한다.
+		parameterType : 쿼리에 적용할 파라미터 타입.(hashMap : Map 타입)
+		CDATA : 원시 문자열을 나타낸다. 그 안에 있는 문자열은 < 등의 태그 문자를 태그로 인식하지 않게 됨
+		hashMap : map => {"title" : "피터팬"}, {"category" : "소설"}, {"price":10000}
+		map에 {"bookId", "1"} 추가
+	-->
+	<insert id="insert" parameterType="hashMap">
+		<selectKey order="BEFORE" keyProperty="bookId" resultType="int">
+			SELECT NVL(MAX(BOOK_ID),0)+1 FROM BOOK
+		</selectKey>
+		<![CDATA[
+			INSERT INTO BOOK(BOOK_ID, TITLE, CATEGORY, PRICE)
+			VALUES(
+					#{bookId}, 
+					#{title}, 
+					#{category}, 
+					#{price}
+			)
+		]]>
+	</insert>
+	
+	<!-- ibatis : parameterClass
+		 mybatis : parameterType
+	-->
+	<select id="select_detail" parameterType="hashMap" resultType="hashMap">
+		<![CDATA[
+			SELECT BOOK_ID AS bookId, TITLE, CATEGORY, PRICE
+			  FROM BOOK
+			 WHERE BOOK_ID = 1;
+		 ]]>
+	</select>
+	
+</mapper>
