@@ -1,5 +1,6 @@
 package kr.or.ddit.service.impl;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,6 @@ import kr.or.ddit.service.BookService;
  	
  	@Service 어노테이션
  	: 스프링에게 서비스 클래스라는 것을 알려주는 역할
- 	
  */
 @Service
 public class BookServiceImpl implements BookService {
@@ -33,8 +33,8 @@ public class BookServiceImpl implements BookService {
 	@Override
 	public String create(Map<String, Object> map) {
 		//insert 쿼리 실행, 성공 1 실패 0을 리턴 받는다.
-		int affectRwoCount = bookDao.insert(map);
-		if(affectRwoCount == 1) {//성공
+		int affectRowCount = bookDao.insert(map);
+		if(affectRowCount == 1) {//성공
 			System.out.println("BookServiceImpl 성공");
 			return "1"; 
 		}
@@ -44,10 +44,32 @@ public class BookServiceImpl implements BookService {
 
 	//@Override 어노테이션 이전에 에러가 없는 것처럼 보일지 몰라도 Override를 통해 시그니처 메서드를 이용해줘야 한다.
 	//BookService를 implement한 메서드, 메서드 재정의 => BookService 시그니처 처리가 필요함..
+	//map => {"bookId" : "7"}
 	@Override
 	public Map<String, Object> detail(Map<String, Object> map) {
 		//Controller로부터 받은 파라미터(map) 전달
 		return bookDao.selectDetail(map);
 	}
 	
+	//책 목록
+	@Override
+	public List<Map<String, Object>> list(Map<String, Object> map) {
+		//Controller로부터 받은 파라미터(map)를 전달
+		return this.bookDao.selectList(map); 
+	}
+
+	//책 수정
+	//map => {"bookId" : "4"}
+	@Override
+	public int edit(Map<String, Object> map) {
+		int affectRowCount = this.bookDao.update(map);
+		return affectRowCount;
+	}
+	
+	//책 삭제
+	//map => {"bookId":"17"}
+	@Override
+	public int remove(Map<String, Object> map) {
+		return this.bookDao.delete(map);
+	}
 }

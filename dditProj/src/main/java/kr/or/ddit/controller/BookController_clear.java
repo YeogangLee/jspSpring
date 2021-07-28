@@ -69,6 +69,22 @@ public class BookController_clear {
 		return mav;
 	}
 	
+	/*
+		- list() 메서드가 호출되는 2가지 경우
+		1. detail.jsp 페이지에서 목록으로 클릭 시
+		2. list.jsp 페이지에서 키워드 입력 후 검색 버튼 클릭 시
+		 
+		1번의 경우 넘어오는 파라미터가 없다. -> 하지만 에러가 발생하지 않는다.
+		(스프링의 특징 중 하나라고 예전에 sem한테 들은 것 같다.)
+		 
+		파라미터가 없을 때 실행하는 select와
+		파라미터를 where의 조건값으로 받아서 사용하는 select를
+		동일한 쿼리(select_list)를 이용해 동적 쿼리(<if test="조건">)로 처리해주고 있다.
+		
+		쌤이 말한..
+		뒤로가기해도, 검색 키워드와 결과 리스트가 남아있는 거
+		해보고 싶다.
+	 */
 	@RequestMapping(value="/list", method=RequestMethod.GET)
 	public ModelAndView list(@RequestParam Map<String, Object> map) {
 		
@@ -102,12 +118,15 @@ public class BookController_clear {
 	 * 1.redirect
 	 * 2.forward
 	 */
+	
+	//1.redirect
 	@RequestMapping("/move")
 	public String move() {
 		//redirect : 데이터 전달 불가능, 파라미터만 전달, 주로 다른 메서드로 이동할 때 이용
 		return "redirect:/mypage?id=a001&name=kimchulsu&age=23";
  	}
 	
+	//2.forward
 	@RequestMapping("/mypage")
 	public String mypage(Model model, @RequestParam String id, @RequestParam String name, @RequestParam int age) {
 		System.out.println("id : " + id);
@@ -125,6 +144,7 @@ public class BookController_clear {
 	 * 스프링에서 요청 형태에 따른, 파라미터를 전달하는 3가지 방법 - 07.27.화 
 	 * : 1.get - 2.post - 3."/경로/{변수명}" + @PathVariable("변수명") 
 	 */
+	
 	//1.GET
 	@RequestMapping(value="/register", method=RequestMethod.GET)
 	public String registerByParameter(String userId, String password) {
@@ -138,6 +158,7 @@ public class BookController_clear {
 		
 		return "book/success"; //forward
 	}
+	
 	//3. /경로/{변수명} + @PathVariable("변수명") 자료형 변수명
 	@RequestMapping(value="/register/{userId}", method=RequestMethod.GET)
 	public String registerByPath(@PathVariable("userId") String userId) {
@@ -146,6 +167,7 @@ public class BookController_clear {
 		
 		return "book/success";
 	}
+	
 	//2.POST
 	@RequestMapping("/register02") //POST를 명시하지 않아도 정상적으로 동작되네..
 	public String register02(String password, String userId, int coin) {

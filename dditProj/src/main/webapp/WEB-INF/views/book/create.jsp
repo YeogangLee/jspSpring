@@ -19,7 +19,17 @@
 		<p>가격 : <input type="text" name="price" /></p>
 		<p><input type="submit" value="저장" /></p> 
 	</form>
+	
+<!-- 
+	* 파일업로드 폼 방식 요청 처리
+	: 파일업로드 폼 파일 요소(태그)값을 스프링 MVC가 지원하는 MultipartFile 매개변수로 처리한다.
+ -->
+	<form method="post" enctype="multipart/form-data" action="/registerFile01">
+		<input type="file" name="picture" /><br/> <!-- *****name속성값 -->
+		<input type="submit" value="이미지 업로드" />
+	</form>
 	<br />
+	<a href="/list">목록으로</a><br/>
 	<a href="/gugu">구구단</a><br/>
 	<a href="/point">성적 확인</a><br/>
 	<a href="/move">redirect</a><br/>

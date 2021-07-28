@@ -1,5 +1,6 @@
 package kr.or.ddit.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
@@ -17,6 +18,7 @@ public class BookDao {
 	//root-context.xml에서 미리 만들어 놓은 sqlSessionTemplate 타입 객체를
 	//BookDao 객체에 주입하여 sqlSessionTemplate.select() 이런 식으로 사용할 수 있게 되었다.
 	//멤버변수(필드) 위에 Autowired 어노테이션으로 의존성을 주입하는 방식을 필드 인젝션(Field Injection)이라고 한다.
+	
 	//이전 방식 :
 	//SqlSessionTemplate sqlSessionTemplate = new SqlSessionTemplate(); 
 	@Autowired
@@ -30,7 +32,7 @@ public class BookDao {
 		return this.sqlSessionTemplate.insert("book.insert", map);
 	}
 	
-	//Map형태를 반환, 해당 메서드 내부에서 사용하는 book.select_detail(쿼리 중 하나)를 찾아가면 마찬가지로 parameterMap을 Map형태로 받는다. 
+	//Map형태를 반환, 해당 메서드 내부에서 사용하는 book.select_detail을 찾아가면 마찬가지로 parameterMap을 Map형태로 받는다. 
 	public Map<String, Object> selectDetail(Map<String, Object> map) {
 		//selectOne(매퍼xml의 namespace.id, 전달할 데이터) : 데이터를 1행만 가져올 때 이용
 		/*
@@ -38,6 +40,28 @@ public class BookDao {
 		 쿼리 결과 행의 수가 여러 개 --> TooManyResultException 예외를 throw함
 		 */
 		return this.sqlSessionTemplate.selectOne("book.select_detail", map);
+	}
+	
+	//map => {"keyword", "검색어"}
+	//책 목록
+	public List<Map<String, Object>> selectList(Map<String, Object> map) {
+		//selectList(namespace.id, 파라미터)
+		return this.sqlSessionTemplate.selectList("book.select_list", map);
+	}
+	
+	//책 수정
+	public int update(Map<String, Object> map) {
+		//selectList(namespace.id, 파라미터)
+		//update 구문은 조건에 일치하는 모든 행을 갱신하므로 0 또는 1 이상을 리턴
+		return this.sqlSessionTemplate.update("book.update", map);
+	}
+	
+	//책 삭제
+	//map => {"bookId":"17"}
+	public int delete(Map<String, Object> map) {
+		//delete(namespace.id, 파라미터)
+		//return 영향받은 행의 개수(0 또는 1이상)
+		return this.sqlSessionTemplate.delete("book.delete", map);
 	}
 	
 }

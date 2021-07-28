@@ -1,18 +1,25 @@
 package kr.or.ddit.controller;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import kr.or.ddit.service.BookService;
-import kr.or.ddit.vo.PointVO;
 
 //스프링 프레임워크가 브라우저의 요청(request)을 받아들이는
 //컨트롤러라고 인지하여 자바 빈(java bean)으로 등록해서 관리한다.
@@ -20,33 +27,15 @@ import kr.or.ddit.vo.PointVO;
 @Controller
 public class BookController {
 
-	//스프링 이전
-//	private BookService bookService = BookService.getInstance();
+	private static final Logger logger = LoggerFactory.getLogger(BookController.class);
 	
-	// 스프링 방식 : 인터페이스(BookService)를 통한 의존성 주입 (DI : Dependency Injection)
+	//스프링 이전
+	//private BookService bookService = BookService.getInstance();
+	
+	//스프링 방식 : 인터페이스(BookService)를 통한 의존성 주입 (DI : Dependency Injection)
 	@Autowired
 	BookService bookService;
 	
-	/*
-	 MVC pattern(model2 방식) : 웹 페이지와 java code를 분리
-	 
-	 1. Model : 데이터 처리 클래스(DAO, DTO), back end
-	  - Data Access Object(DAO) : 실질적인 비즈니스 로직을 처리
-	  - Data Transfer Object(DTO) : 데이터를 저장, 전달
-	    VO(Value Object), bean(빈), TO(Table Object)
-	 2. Controller : 프로그램의 흐름을 제어(servlet class)
-	 3. View : 화면 처리 (jsp), front end
-	 */
-	
-	//브라우저의 주소(URI)가 /create일 때 실행되는 자바 컨트롤러 메서드
-	//RequestMapping 어노테이션 : 브라우저의 요청 URI 요청에 실행되는 자바 메소드 지정
-	/*
-		value 속성 : 요청 URI
-		method 속성 : http 요청 메소드
-		1) GET 메소드 : 데이터를 변경하지 않는 경우
-		2) POST 메소드 : 데이터가 변경될 경우 
-		ex. 현재 GET을 사용 -> 데이터를 변경하지 않구나~ 하고 이해
-	 */
 	@RequestMapping(value="/create", method=RequestMethod.GET)
 	public ModelAndView create() {
 		//ModelAndView
@@ -88,98 +77,179 @@ public class BookController {
 			
 		}else {
 			//추가된 책의 id : book테이블의 book_id 컬럼값
-			mav.setViewName("redirect:/detail?bookId=" + map.get("bookId"));
+			//AsIs
+//			mav.setViewName("redirect:/detail?bookId=" + map.get("bookId"));
+			//ToBe
+			//book.xml => selectKey order="BEFORE" keyProperty="bookId" resultType="int"
+			mav.setViewName("redirect:/detail/" + map.get("bookId"));
 		}
 		
 		return mav; 
 	}
 	
-	/*
-	 <프로젝트 파일 구성>
-	 1. pom.xml
-	   - 메이븐 프로젝트의 빌드 파일 
-	   - C:\Users\PC-14\.m2\repository\javax\servlet\jsp\jsp-api\2.1 
-	 2. src/main/java
-	   - 자바 소스 경로
-	 3. src/main/resources
-	   - 리소스 파일 경로 (mybatis의 xml이 들어감)
-	 4. WEB-INF/spring/root-context.xml
-	   - 스프링 설정 파일, 스프링 자체를 설정함
-	 5. WEB-INF/spring/appServlet/servlet-context.xml
-	   - 스프링 웹 설정 파일
-	 6. WEB-INF/views
-	   - 뷰 파일 경로(jsp)
-	 */
-
-	//2. ModelAndView를 사용하지 않고 jsp를 리턴
-	@RequestMapping(value="/gugu", method=RequestMethod.GET)
-	public String gugu() {
-		return "book/gugu"; // /WEB-INF/views/book/gugu.jsp
+	//경로 패턴 지정
+	//http://localhost:8090/detail/7
+	@RequestMapping("/detail/{bookId}")
+	public ModelAndView detail(@PathVariable("bookId") int bookId, ModelAndView mav) {
+//		logger.debug("bookId : " + bookId);
+//		System.out.println("bookId : " + bookId);
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("bookId", bookId); //이게 아래에 내려가면 안된다, 아래에서 map을 던져야 하므로.
+		
+		Map<String, Object> detailMap = this.bookService.detail(map);
+//		logger.debug("detailMap : " + detailMap);
+//		System.out.println("detailMap : " + detailMap);
+		
+		mav.addObject("bookId", bookId);
+		mav.addObject("data", detailMap);
+		mav.setViewName("book/detail");
+		
+		return mav;
 	}
 	
-	//action="/gugu_result", method=RequestMethod.POST 생략
-	//name="dan"
-	//3. Model 사용
-	//아래 어노테이션에서 속성 사용 X, 바로 value이름만 넣기
-	@RequestMapping("/gugu_result")
-	public String gugu_result(@RequestParam(defaultValue="3") int dan, Model model) {
+	/*
+		- list() 메서드가 호출되는 2가지 경우
+		1. detail.jsp 페이지에서 목록으로 클릭 시
+		2. list.jsp 페이지에서 키워드 입력 후 검색 버튼 클릭 시
+		 
+		1번의 경우 넘어오는 파라미터가 없다. -> 하지만 에러가 발생하지 않는다.
+		(스프링의 특징 중 하나라고 예전에 sem한테 들은 것 같다.)
+		 
+		파라미터가 없을 때 실행하는 select와
+		파라미터를 where의 조건값으로 받아서 사용하는 select를
+		동일한 쿼리(select_list)를 이용해 동적 쿼리(<if test="조건">)로 처리해주고 있다.
 		
-		String result = "";
-		for(int i=1; i<=9; i++) {
-			result += dan + " x " + i +" = " + dan * i + "<br/>";
+		아래 메서드에 req 파라미터 추가하면 sem이 어제 설명한 기능 가능할지도 모른다.
+		HttpServletRequest req 
+	 */
+	//form 태그의 기본 HTTP 메소드는 GET. 검색 버튼 클릭 -> /list?keyword=검색어
+	//map => {"keyword", "검색어"}
+	@RequestMapping(value="/list", method=RequestMethod.GET)
+	//
+	public ModelAndView list(@RequestParam Map<String, Object> map) {
+		System.out.println("sysout map : " + map);
+		logger.debug("logger map : " + map);
+		
+		List<Map<String, Object>> list = this.bookService.list(map);
+
+//		@Autowired 사용 불가능 -> 1.파라미터에 선언 / 2.new키워드 이용 
+		ModelAndView mav = new ModelAndView();
+		//데이터 뷰를 전달할 수 있도록 mav객체에 넣음
+		mav.addObject("data", list);
+		mav.setViewName("book/list"); //forward
+		//list.jsp에 keyword를 추가
+		//목록 페이지에서 keyword HTTP 파라미터가 있을 때..
+		if(map.containsKey("keyword")) {
+			//파라미터가 있다면 뷰(list.jsp)에 keyword 전달
+			mav.addObject("keyword", map.get("keyword"));
 		}
 		
-		//mav를 사용했다면 아래 코드가 이렇게 -> mav.addObject("result", result);
-		model.addAttribute("dan", dan);
-		model.addAttribute("result", result);
-		return "book/gugu_result";
+		return mav;
+		
 	}
 	
-	//위에서 @RequestMapping 어노테이션에 value를 써도 되고, 안 써도 되는 것을 확인했다.
+	/* 책 수정 GET */
+	// /update?bookId=4 => String bookId, @RequestParam String bookId
+	// /update/4		=> @RequestMapping("/update/{bookId}")
+	//					   @PathVariable("bookId") String bookId
 	
-	//성적 계산
-	@RequestMapping("/point")
-	public String point() {
-		return "book/point";
+	//map => {"bookId" : "4"}
+	@RequestMapping(value="/update", method=RequestMethod.GET)
+	public ModelAndView update(@RequestParam Map<String, Object> map) {
+		//map => {"bookId":"5"}
+		Map<String, Object> detailMap = this.bookService.detail(map);
+		//detailMap => {PRICE=6000, CATEGORY=요리책, BOOKID=5, TITLE=밥}
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("data", detailMap);
+		mav.setViewName("/book/update"); //forward
+		
+		return mav;
 	}
 	
-	//성적 계산 결과
-	/*
-	 form 데이터의 전달 방법
-	 
-	 1) RequestParam 어노테이션 
-	 2) ModelAttribute 어노테이션 : 모델클래스(VO)로 한번에 전달 
-	 
+	/* 책 수정 POST */
+	//스프링은 http 메소드가 GET인지 POST인지 상관없이
+	//RequestParam 어노테이션이 있으면 무조건 파라미터를 넣어준다.
+	//파라미터 : bookId, title, category, price
+	//map => {"bookId":1, "title":"제목 수정", "category":"IT", "price":"10000"}
+	@RequestMapping(value="/update", method=RequestMethod.POST)
+	public ModelAndView updatePost(@RequestParam Map<String, Object> map, ModelAndView mav) {
+		int result = this.bookService.edit(map);
+		
+		if(result > 0) {//업데이트 성공
+			System.out.println("map.get(\"bookId\") : " + map.get("bookId"));
+			System.out.println("map.get(\"bookId\").toString() : " + map.get("bookId").toString());
+			String bookId = map.get("bookId").toString(); //toString 왜 사용하는 거지?
+			mav.setViewName("redirect:/detail/" + bookId);
+			
+		}else {	//업데이트 실패
+			//갱신 화면을 바로 다시 보여줌
+			//방법1. 메서드 호출
+			mav = this.update(map); //update()메서드로 바로 이동하는 것
+			//방법2. redirect
+//			mav.setViewName("redirect:/update");
+		}
+		return mav;
+	}
+	
+	//HTTP 파라미터 => bookId=17 
+	//RequestParam = map => {"bookId":"17"} 
+	//삭제는 get방식으로 하지 않고 post방식, 왜냐하면 url이용해서 데이터 지워버리면 안되니까.
+	@RequestMapping(value="/delete", method=RequestMethod.POST)
+	public ModelAndView deletePost(@RequestParam Map<String, Object> map, ModelAndView mav) {
+		int result = this.bookService.remove(map);
+		
+		if(result > 0) {//도서 삭제 성공
+			//목록을 다시 보여준다.
+			//방법1.forward
+//			mav = this.list(map);
+			//방법2.redirect 
+			mav.setViewName("redirect:/list");
+		}else {			//도서 삭제 실패
+//			String bookId = map.get("map").toString(); 아래 자리에 bookId 이용하는 방법도 가능..
+			mav.setViewName("redirect:/detail/" + map.get("map").toString());
+		}
+		
+		return mav; 
+	}
+	
+	//이미지 업로드
+	//MultipartFile picture 변수명과 name속성값이 동일해야 한다.
+	@RequestMapping(value="/registerFile01", method=RequestMethod.POST)
+	public String registerFile01(MultipartFile picture) {
+		logger.info("registerFile01");
+		
+		String uploadFolder = "D:\\upload";
+		
+		logger.info("originalName : " + picture.getOriginalFilename());
+		logger.info("size : " + picture.getSize());
+		logger.info("contentType : " + picture.getContentType());
+		
+		//uploadFolder : 파일 저장 경로 
+		File saveFile = new File(uploadFolder, picture.getOriginalFilename());
+		try {
+			//transferTo()의 파라미터로는 java.io.File의 객체를 지정하면 된다.
+			picture.transferTo(saveFile);
+		}catch (Exception ex) {
+			logger.info(ex.getMessage());
+		}
+		
+		//앞에 폴더 만들어서 경로에 추가하면 좋겠다
+		return "success";
+	}
+	
+	/**
+	 * 페이지 이동 방법 2가지 - 07.26.월
+	 * 1.redirect
+	 * 2.forward
 	 */
-	@RequestMapping("/point_result")
-	public String point_result(@ModelAttribute PointVO pointVo, Model model) {
-		//point.jsp의 name속성이 pointVo에 들어온다.
-		//그러면, PointVO의 total, average 빼고 전부 세팅된 것
-		
-		//total 필드에 총점 입력
-		pointVo.setTotal(pointVo.getKor() + pointVo.getEng() + pointVo.getMat());
-		
-		//average 필드에 평균 입력(%.2f : 소수점 2자리의 실수 값)
-		String average = String.format("%.2f", pointVo.getTotal()/3.0);
-		pointVo.setAverage(Double.parseDouble(average));
-		model.addAttribute("pointVo", pointVo); //이게 중요 ******** 이 이름으로 jsp로 간다는 게 중요
-		//--> 데이터를 전달하고 있다 : 포워드 방식
-		
-		return "book/point_result";
-		
-		/*
-		 포인트 
-		 : jsp에서 name값이 여러 개일때 VO로 "싹 한꺼번에" 받을 수 있다.
-		      일단 넣어놓고, 그 아래에서 가공을 하고, 결과가 담긴 VO를 리턴할 수 있다. 
-		 */
-	}
-	
+	//1.redirect
 	@RequestMapping("/move")
 	public String move() {
-//		return "redirect:/gugu";
+		//redirect : 데이터 전달 불가능, 파라미터만 전달, 주로 다른 메서드로 이동할 때 이용
 		return "redirect:/mypage?id=a001&name=kimchulsu&age=23";
  	}
-	
+	//2.forward
 	@RequestMapping("/mypage")
 	public String mypage(Model model, @RequestParam String id, @RequestParam String name, @RequestParam int age) {
 		System.out.println("id : " + id);
@@ -193,5 +263,47 @@ public class BookController {
 		return "book/mypage";
 	}
 	
+	/**
+	 * 스프링에서 요청 형태에 따른, 파라미터를 전달하는 3가지 방법 - 07.27.화 
+	 * : 1.get - 2.post - 3."/경로/{변수명}" + @PathVariable("변수명") 
+	 */
+	//1. GET
+	//register?userId=a001&amp;password=1234
+	//RequestParam Map(String Object> map
+	//URL 경로상의 쿼리 파라미터 정보로부터 요청 데이터를 각각 받을 수 있음
+	@RequestMapping(value="/register", method=RequestMethod.GET)
+	public String registerByParameter(String userId, String password) {
+		logger.info("registerByParameter에 왔다");
+		logger.info("userId" + userId);
+		logger.info("password" + password);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("userId", userId);
+		map.put("password", password);
+		
+		return "book/success"; //forward
+	}
+	
+	//3. /경로/{변수명} + @PathVariable
+	// /register/a001
+	@RequestMapping(value="/register/{userId}", method=RequestMethod.GET)
+	public String registerByPath(@PathVariable("userId") String userId) {
+		logger.info("registerByPath");
+		logger.info("userId : " + userId);
+		
+		return "book/success";
+	}
+	
+	//2.POST
+	//name => userId, password, coin
+	@RequestMapping("/register02") //POST를 명시하지 않아도 정상적으로 동작되네..
+	public String register02(String password, String userId, int coin) {
+		logger.info("register02");
+		logger.info("userId : " + userId);
+		logger.info("password : " + password);
+		logger.info("coin : " + coin);
+		return "book/success";
+	}
+
 	
 }

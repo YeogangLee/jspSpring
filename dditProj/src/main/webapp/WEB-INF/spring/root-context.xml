@@ -41,4 +41,16 @@
 		결과적으로, 작성 순서대로 다음 객체의 생성자에 이용된다.
 		dataSource -> sqlSessionFactory -> sqlSessionTemplate
 	 -->
+	
+	<!-- 파일 업로드 --> 
+	<bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	<!-- 파일 업로드 용량 (10MB) -->
+		<property name="maxUploadSize" value="10485760" />
+		<property name="defaultEncoding" value="UTF-8" />
+	</bean>
+	
+	<!-- 파일 업로드 디렉토리 설정 -->
+	<bean id="uploadPath" class="java.lang.String">
+		<constructor-arg value="D:\\upload" />
+	</bean>
 </beans>

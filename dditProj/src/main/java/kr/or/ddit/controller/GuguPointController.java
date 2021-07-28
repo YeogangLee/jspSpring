@@ -26,6 +26,9 @@ public class GuguPointController {
 	   - 스프링 웹 설정 파일
 	 6. WEB-INF/views
 	   - 뷰 파일 경로(jsp)
+	 t.
+	 7. WEB-INF/web.xml
+	   - 서블릿을 등록하고, 필터를 등록,매핑하는 파일
  */
 /*
 	 MVC pattern(model2 방식) : 웹 페이지와 java code를 분리

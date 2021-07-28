@@ -168,6 +168,44 @@
 		</dependency>
 		<!-- database 관련 라이브러리 추가 끝 -->
 		
+		<!-- 롬복 lombok -->		
+		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+		<!-- 자동으로 자원을 관리해주고, 자동으로 getter/setter를 generation하고
+			 logger.info() 로깅 기능 이용이 가능하다.
+		-->
+		<dependency>
+		    <groupId>org.projectlombok</groupId>
+		    <artifactId>lombok</artifactId>
+		    <version>1.18.20</version>
+		    <scope>provided</scope>
+		</dependency>
+
+		<!-- JSON -->				
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-databind</artifactId>
+		    <version>2.9.5</version>
+		</dependency>
+		
+		<!-- 파일 업로드 라이브러리 시작 -->
+		<!-- Apache Commons FileUpload -->
+		<!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
+		<dependency>
+		    <groupId>commons-fileupload</groupId>
+		    <artifactId>commons-fileupload</artifactId>
+		    <version>1.4</version>
+		</dependency>
+		
+		<!-- Imgscalr A Java Image Scaling Library -->
+		<!-- https://mvnrepository.com/artifact/org.imgscalr/imgscalr-lib -->
+		<dependency>
+		    <groupId>org.imgscalr</groupId>
+		    <artifactId>imgscalr-lib</artifactId>
+		    <version>4.2</version>
+		</dependency>
+		<!-- 파일 업로드 라이브러리 끝 -->		
+				
 	</dependencies>
     <build>
         <plugins>
