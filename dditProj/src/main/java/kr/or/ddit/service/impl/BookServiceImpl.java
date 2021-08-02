@@ -42,6 +42,13 @@ public class BookServiceImpl implements BookService {
 		return null;
 	}
 
+	//책 목록
+	@Override
+	public List<Map<String, Object>> list(Map<String, Object> map) {
+		//Controller로부터 받은 파라미터(map)를 전달
+		return this.bookDao.selectList(map); 
+	}
+
 	//@Override 어노테이션 이전에 에러가 없는 것처럼 보일지 몰라도 Override를 통해 시그니처 메서드를 이용해줘야 한다.
 	//BookService를 implement한 메서드, 메서드 재정의 => BookService 시그니처 처리가 필요함..
 	//map => {"bookId" : "7"}
@@ -49,13 +56,6 @@ public class BookServiceImpl implements BookService {
 	public Map<String, Object> detail(Map<String, Object> map) {
 		//Controller로부터 받은 파라미터(map) 전달
 		return bookDao.selectDetail(map);
-	}
-	
-	//책 목록
-	@Override
-	public List<Map<String, Object>> list(Map<String, Object> map) {
-		//Controller로부터 받은 파라미터(map)를 전달
-		return this.bookDao.selectList(map); 
 	}
 
 	//책 수정

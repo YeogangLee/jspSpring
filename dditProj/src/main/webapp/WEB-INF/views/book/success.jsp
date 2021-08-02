@@ -6,6 +6,7 @@
 	<title>성공</title>
 </head>
 <body>
-	여기는 성공 success.jsp
+	여기는 성공 success.jsp<br/>
+	파일 업로드 성공 (요청 : /registerFile01)
 </body>
 </html>

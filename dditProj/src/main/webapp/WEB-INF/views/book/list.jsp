@@ -41,7 +41,6 @@
 <!-- 				<td>10000</td> --!>
 <!-- 			</tr> -->
 			<tr>
-			
 				<!-- row.map의 키명 -->
 				<!-- BOOKID 전부 대문자 -->
 				<td><a href="/detail/${row.BOOKID}">${row.TITLE}</a></td>

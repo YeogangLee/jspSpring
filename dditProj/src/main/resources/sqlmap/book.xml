@@ -28,18 +28,6 @@
 		]]>
 	</insert>
 	
-	<!-- 도서 상세 -->
-	<!-- ibatis : parameterClass
-		 mybatis : parameterType
-	-->
-	<select id="select_detail" parameterType="hashMap" resultType="hashMap">
-		<![CDATA[
-			SELECT BOOK_ID AS bookId, TITLE, CATEGORY, PRICE
-			  FROM BOOK
-			 WHERE BOOK_ID = #{bookId}
-		 ]]>
-	</select>
-	
 	<!-- 도서 목록 -->
 	<!-- parameterType : 조건으로 들어오는 파라미터 타입. keyword
 		 resultType : SQL 실행 후 리턴되는 결과를 받는 타입 
@@ -67,6 +55,18 @@
 		<if test="keyword!=null and keyword!=''">
 		   AND TITLE LIKE '%' || #{keyword} || '%' OR CATEGORY LIKE '%' || #{keyword} || '%'
 		</if>
+	</select>
+	
+	<!-- 도서 상세 -->
+	<!-- ibatis : parameterClass
+		 mybatis : parameterType
+	-->
+	<select id="select_detail" parameterType="hashMap" resultType="hashMap">
+		<![CDATA[
+			SELECT BOOK_ID AS bookId, TITLE, CATEGORY, PRICE
+			  FROM BOOK
+			 WHERE BOOK_ID = #{bookId}
+		 ]]>
 	</select>
 	
 	<!-- 책 수정 -->
