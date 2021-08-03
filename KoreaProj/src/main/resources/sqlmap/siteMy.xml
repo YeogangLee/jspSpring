@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="siteMy">
+
+	<!-- 사업장 등록 -->
+	<insert id="insert" parameterType="kr.or.ddit.vo.SiteVO">
+		<selectKey order="BEFORE" keyProperty="siteNum" resultType="int">
+			SELECT NVL(MAX(site_num),0)+1 FROM site
+		</selectKey>
+		<![CDATA[
+			INSERT INTO site (
+						    SITE_NUM
+							,SITE_NM
+							,ADDR
+							,PHN_NUM
+							,CONT_AMT
+							,IN_PEO
+							,ST_DT
+							,EX_COM_DT
+							,COM_DT
+							,ETC
+			) VALUES (
+				 #{siteNum},
+				 #{siteNm},
+				 #{addr},
+				 #{phnNum},
+				 #{contAmt},
+				 #{inPeo},
+				 #{stDt},
+				 #{exComDt},
+				 #{comDt},
+				 #{etc}
+				)
+		]]>
+	</insert>
+	
+	<!-- 전체 목록 조회 -->
+	<select id="selectList" parameterType="hashMap" resultType="hashMap">
+		<![CDATA[
+			SELECT ROW_NUMBER() OVER (ORDER BY SITE_NUM DESC) RNUM
+						,SITE_NUM
+						,SITE_NM
+						,ADDR
+						,PHN_NUM
+						,CONT_AMT
+						,IN_PEO
+						,ST_DT
+						,EX_COM_DT
+						,COM_DT
+						,ETC
+		      FROM site
+		     WHERE 1 = 1
+		]]>
+		<if test="keyword!=null and keyword!=''">
+		   AND SITE_NM LIKE '%' || #{keyword} || '%'
+		</if>
+	</select>
+	
+	<!-- 상세 조회 -->
+	<select id="selectDetail" parameterType="hashMap" resultType="hashMap">
+		<![CDATA[
+			SELECT  site_num AS siteNum
+			        ,SITE_NM
+					,ADDR
+					,PHN_NUM
+					,CONT_AMT
+					,IN_PEO
+					,ST_DT
+					,EX_COM_DT
+					,COM_DT
+					,ETC
+			  FROM SITE
+			 WHERE SITE_NUM = #{siteNum}
+		 ]]>
+	</select>
+	
+	<!-- 수정 -->
+	<update id="update" parameterType="hashMap">
+		UPDATE SITE
+		   SET SITE_NM = #{siteNm}
+				,ADDR = #{addr}
+				,PHN_NUM = #{phnNum}
+				,CONT_AMT = #{contAmt}
+				,IN_PEO = #{inPeo}
+				,ST_DT = #{stDt}
+				,EX_COM_DT = #{exComDt}
+				,COM_DT = #{comDt}
+				,ETC = #{etc}
+		 WHERE SITE_NUM = #{siteNum} 
+	</update>
+	
+	<!-- 삭제 -->
+	<delete id="delete" parameterType="hashMap">
+		DELETE FROM SITE
+		 WHERE SITE_NUM = #{siteNum}
+	</delete>
+	
+</mapper>

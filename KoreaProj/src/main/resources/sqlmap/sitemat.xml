@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sitemat">
+	<insert id="insert" parameterType="siteMatVo">
+		INSERT INTO SITE_MAT(SITE_NUM,MAT_NM_CD,CNT,PUR_PRI,PUT_DT)
+		VALUES(#{siteNum}, #{matNmCd}, #{cnt}, #{purPri}, SYSDATE)
+	</insert>
+	<select id="selectConMatInfo" resultType="hashMap">
+		SELECT MAT_NM_CD AS matNmCd
+		       ,ITEM_NM AS itemNm
+		  FROM CON_MAT_INFO
+	</select>
+	
+</mapper>
