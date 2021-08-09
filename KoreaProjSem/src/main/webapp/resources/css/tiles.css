@@ -1,0 +1,43 @@
+@charset "UTF-8";
+
+* {
+	font-size : 17px;
+}
+
+#header, .container, #footer {
+	width : 100%;
+	margin : 0px;
+}
+
+#header {
+	background-color : #F2F2F2;
+	height : 100px;
+	float: left;  
+}
+
+.container {
+	height : 1000px;
+	display: flex;
+}
+
+#body {
+	width : 70%;
+/* 	height : 1000px; */
+	margin-left : 10px;
+	float : left;
+	background-color : #E3F2Fd;
+}
+
+#aside {
+	width : 20%;
+/* 	height : 1000px; */
+	float : left;	
+	height : 100%;
+	background-color : #A7FFEB;
+}
+
+#footer {
+	background-color : #FFF9C4;
+	height : 200px;
+	float : left;
+}

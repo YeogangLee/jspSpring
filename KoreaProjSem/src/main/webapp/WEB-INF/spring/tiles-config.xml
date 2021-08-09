@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC 
+"-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" 
+"http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<!-- tiels 설정 -->
+<tiles-definitions>
+<!-- main layout 설정 -->
+<definition name="tiles-layout" template="/WEB-INF/views/tiles/index.jsp">
+	<!-- name속성과 value속성의 JSP파일명이 일치해야 올바르게 작동 -->
+	<put-attribute name="header" value="/WEB-INF/views/tiles/header.jsp" />
+	<put-attribute name="aside" value="/WEB-INF/views/tiles/aside.jsp" />
+	<!-- body는 항상 내용이 바뀌므로 나중에 extends 처리 -->
+	<put-attribute name="body" value="" />
+	<put-attribute name="footer" value="/WEB-INF/views/tiles/footer.jsp" />
+</definition>
+<!-- body 설정 -->
+<definition name="*/*" extends="tiles-layout">
+	<!-- 
+		 */* : Controller에서 요청되는 URI ex) emp/insert  
+		 {1} : views바로 아래 폴더를 의미
+		 {2} : views > 각 폴더 아래 JSP 파일을 의미 
+	 -->
+	<put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp" />
+	<put-attribute name="title" value="tiles" />
+</definition>
+</tiles-definitions>
