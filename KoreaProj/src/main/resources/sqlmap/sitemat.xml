@@ -4,14 +4,86 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="sitemat">
+
+	<resultMap id="siteMatJoin" type="hashMap">
+	  <result property="siteNum" column="SITE_NUM"/> 
+	  <result property="siteNm" column="SITE_NM"/> 
+	  <result property="matNmCd" column="MAT_NM_CD"/>
+	  <result property="itemNm" column="ITEM_NM"/> 
+	  <result property="cnt" column="CNT"/>  
+	  <result property="purPri" column="PUR_PRI"/> 
+	  <result property="putDt" column="PUT_DT"/> 
+	</resultMap>
+	
 	<insert id="insert" parameterType="siteMatVo">
-		INSERT INTO SITE_MAT(SITE_NUM,MAT_NM_CD,CNT,PUR_PRI,PUT_DT)
-		VALUES(#{siteNum}, #{matNmCd}, #{cnt}, #{purPri}, SYSDATE)
+	<!-- merge into 사용 후 -->	
+		MERGE INTO SITE_MAT A 
+		USING DUAL ON(A.SITE_NUM = #{siteNum} AND A.MAT_NM_CD = #{matNmCd})
+		WHEN MATCHED THEN
+		    UPDATE SET A.CNT = A.CNT + #{cnt}
+		WHEN NOT MATCHED THEN
+		    INSERT (SITE_NUM, MAT_NM_CD, CNT, PUR_PRI, PUT_DT)
+		    VALUES(#{siteNum}, #{matNmCd}, #{cnt}, #{purPri}, #{putDt})
+		    
+	<!-- merge into 사용 전 -->
+<!-- 	INSERT INTO SITE_MAT(SITE_NUM,MAT_NM_CD,CNT,PUR_PRI,PUT_DT) -->
+<!-- 	VALUES(#{siteNum}, #{matNmCd}, #{cnt}, #{purPri}, #{putDt}) -->
 	</insert>
+	
 	<select id="selectConMatInfo" resultType="hashMap">
 		SELECT MAT_NM_CD AS matNmCd
 		       ,ITEM_NM AS itemNm
 		  FROM CON_MAT_INFO
 	</select>
+	
+	<!-- 사업장 검색 -->
+	<select id="selectSiteList" parameterType="hashMap" resultType="siteVo">
+		SELECT SITE_NUM ,SITE_NM ,ADDR ,PHN_NUM ,CONT_AMT 
+		       ,IN_PEO ,ST_DT ,EX_COM_DT ,COM_DT ,ETC
+		  FROM SITE_SEM
+		 WHERE 1 = 1
+		 <if test="siteNm != null or siteNm != ''">
+		   AND SITE_NM LIKE '%' || #{siteNm} || '%'
+		 </if>
+	</select>
+	
+	<!-- resultMap : JOIN 할 때 이용
+		 resultType은 vo를 이용하고, vo는 1개의 테이블에 1개의 vo이므로 
+		 mybatis의 resultType은 ibatis의 resultClass였다.
+	-->
+	<!-- 사업장 자재 목록 -->
+	<!-- map : {caseWhere=siteNm, keyword=대전} -->
+	<select id="siteMatList" parameterType="hashMap" resultMap="siteMatJoin">
+		SELECT A.SITE_NUM 
+			  , B.SITE_NM
+			  , A.MAT_NM_CD 
+			  , C.ITEM_NM
+			  , A.CNT 
+			  , A.PUR_PRI 
+			  , A.PUT_DT
+		  FROM SITE_MAT A, SITE_SEM B, CON_MAT_INFO C
+		 WHERE A.SITE_NUM = B.SITE_NUM
+		   AND A.MAT_NM_CD = C.MAT_NM_CD
+		<if test="keyword != null or keyword != ''">
+			<choose>
+				<!-- all 쿼리에는 OR가 들어가서, ()로 묶어서 앞의 조건들과 구분지어 줘야 한다. 
+					 => OR 연산자가 앞 뒤 두 조건만 묶는 다는 것을 알려주기 위해
+				-->
+				<when test="caseWhere=='all'">
+					AND (C.ITEM_NM LIKE '%' || #{keyword} || '%' OR B.SITE_NM LIKE '%' || #{keyword} || '%')
+				</when>
+				<when test="caseWhere=='siteNm'">
+					AND B.SITE_NM LIKE '%' || #{keyword} || '%'
+				</when>
+				<when test="caseWhere=='itemNm'">
+					AND C.ITEM_NM LIKE '%' || #{keyword} || '%'
+				</when>
+				<otherwise>
+					AND 1 = 1
+				</otherwise>
+			</choose>
+		</if>
+	</select>
+	
 	
 </mapper>

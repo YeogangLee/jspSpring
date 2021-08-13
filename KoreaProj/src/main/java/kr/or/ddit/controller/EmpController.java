@@ -92,7 +92,7 @@ public class EmpController {
 	//상세 조회
 	@RequestMapping("/detail/{empNum}")
 	public ModelAndView detail(@PathVariable("empNum") int empNum, ModelAndView mav) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("empNum", empNum);
 		
 		Map<String, Object> empDetailMap = this.empService.detail(map);

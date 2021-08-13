@@ -10,4 +10,49 @@
 		VALUES(#{empNum}, #{siteNum})
 	</insert>
 	
+	<!-- 사원 정보 목록 -->
+	<select id="selectEmpList" resultType="empVo">
+		SELECT EMP_NUM
+,EMP_NM
+,ZIP_CODE
+,ADDR1
+,ADDR2
+,PHN_NUM
+,POS
+,DEPT_NM
+FROM EMP
+ORDER BY EMP_NUM ASC
+	</select>
+	
+	<!-- 사원 상세 정보 -->
+	<select id="selectEmpDetail" parameterType="int" resultType="empVo">
+		SELECT EMP_NUM
+,EMP_NM
+,ZIP_CODE
+,ADDR1
+,ADDR2
+,PHN_NUM
+,POS
+,DEPT_NM
+FROM EMP
+WHERE EMP_NUM = #{empNum}
+	</select>
+	
+	
+	<!-- 사업장 정보 목록 -->
+	<select id="selectSiteList" resultType="siteVo">
+	SELECT SITE_NUM
+,SITE_NM
+,ADDR
+,PHN_NUM
+,CONT_AMT
+,IN_PEO
+,ST_DT
+,EX_COM_DT
+,COM_DT
+,ETC
+FROM SITE_SEM
+ORDER BY SITE_NUM ASC
+	</select>
+	
 </mapper>

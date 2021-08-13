@@ -9,7 +9,7 @@
 	<version>1.0.0-BUILD-SNAPSHOT</version>
 	<properties>
 		<java-version>1.8</java-version>
-		<org.springframework-version>3.1.1.RELEASE</org.springframework-version>
+		<org.springframework-version>5.2.5.RELEASE</org.springframework-version>
 		<org.aspectj-version>1.6.10</org.aspectj-version>
 		<org.slf4j-version>1.6.6</org.slf4j-version>
 	</properties>
@@ -117,77 +117,116 @@
 			<scope>test</scope>
 		</dependency>
 		
-		<!-- database 관련 라이브러리 추가 시작 -->
-		<!-- 1. MyBatis -->
+		<!-- database 관련 라이브러리 추가 시작 mvnrepository.com -->
 		<!-- https://mvnrepository.com/artifact/org.mybatis/mybatis -->
+		<!-- 프레임워크(라이브러리 집합 + 디자인패턴). 
+		XML과 애너테이션을 사용하여 SQL문으로 객체들을 연결.
+		freeware -->
 		<dependency>
 		    <groupId>org.mybatis</groupId>
 		    <artifactId>mybatis</artifactId>
 		    <version>3.5.4</version>
 		</dependency>
 		
-		<!-- 2. MyBatis Spring -->
-		<!-- MyBatis 프레임워크와 Spring 프레임워크 사이에서 교량(bridge)역할을 한다 -->
 		<!-- https://mvnrepository.com/artifact/org.mybatis/mybatis-spring -->
+		<!-- MyBatis 프레임워크와 spring 프레임워크 사이에 교량(bridge)역할을 해줌 -->
 		<dependency>
 		    <groupId>org.mybatis</groupId>
 		    <artifactId>mybatis-spring</artifactId>
 		    <version>2.0.4</version>
 		</dependency>
-		
-		<!-- 3. Spring JDBC -->
-		<!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
+		<!-- 5.2.5.RELEASE -->
 		<dependency>
 		    <groupId>org.springframework</groupId>
 		    <artifactId>spring-jdbc</artifactId>
 		    <version>${org.springframework-version}</version>
 		</dependency>
 		
-		<!-- 4. Apache Commons DBCP -->
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-dbcp2 -->
+		<!-- Apache Commons DBCP 커넥션 풀을 사용함 -->
 		<dependency>
 		    <groupId>org.apache.commons</groupId>
 		    <artifactId>commons-dbcp2</artifactId>
 		    <version>2.7.0</version>
 		</dependency>
-		
-		<!-- 5. Log4Jdbc Log4j2 JDBC 4 1 -->
 		<!-- https://mvnrepository.com/artifact/org.bgee.log4jdbc-log4j2/log4jdbc-log4j2-jdbc4.1 -->
 		<dependency>
 		    <groupId>org.bgee.log4jdbc-log4j2</groupId>
 		    <artifactId>log4jdbc-log4j2-jdbc4.1</artifactId>
 		    <version>1.16</version>
 		</dependency>
-
-		<!-- 6. Ojdbc6 -->		
 		<!-- https://mvnrepository.com/artifact/com.oracle.database.jdbc/ojdbc6 -->
+		<!-- Oracle JDBC Driver 적합함(JDK6, JDK7, and JDK8) -->
 		<dependency>
 		    <groupId>com.oracle.database.jdbc</groupId>
 		    <artifactId>ojdbc6</artifactId>
 		    <version>11.2.0.4</version>
 		</dependency>
-		<!-- database 관련 라이브러리 추가 끝 -->
-		
-		<!-- 롬복 lombok -->		
+		<!-- database 관련 라이브러리 추가 끝 -->  
 		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
-		<!-- 자동으로 자원을 관리해주고, 자동으로 getter/setter를 generation하고
-			 logger.info() 로깅 기능 이용이 가능하다.
-		-->
+		<!-- 자동으로 자원을 관리해주고, getter/setter를 자동 처리해줌
+		     logger.info() -->
 		<dependency>
 		    <groupId>org.projectlombok</groupId>
 		    <artifactId>lombok</artifactId>
 		    <version>1.18.20</version>
 		    <scope>provided</scope>
 		</dependency>
-
-		<!-- JSON -->				
+		
+		<!-- json 데이터 처리 시작 -->
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
+		<!-- Core annotations 어노테이션 사용 가능-->
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-annotations</artifactId>
+		    <version>2.9.5</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+		<!-- 요청한 json 데이터를 처리하기 위해 의존 라이브러리를 추가함 -->
 		<dependency>
 		    <groupId>com.fasterxml.jackson.core</groupId>
 		    <artifactId>jackson-databind</artifactId>
 		    <version>2.9.5</version>
 		</dependency>
-		        
+		<!-- https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-mapper-asl -->
+		<!-- Data Mapper package json 데이터를 좀 더 심화적으로 다룰수 있음 -->
+		<dependency>
+		    <groupId>org.codehaus.jackson</groupId>
+		    <artifactId>jackson-mapper-asl</artifactId>
+		    <version>1.9.13</version>
+		</dependency>
+		<!-- json 데이터 처리 끝 -->
+		<!--  파일 업로드 라이브러리 시작 -->
+		<!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
+		<dependency>
+		    <groupId>commons-fileupload</groupId>
+		    <artifactId>commons-fileupload</artifactId>
+		    <version>1.4</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.imgscalr/imgscalr-lib -->
+		<dependency>
+		    <groupId>org.imgscalr</groupId>
+		    <artifactId>imgscalr-lib</artifactId>
+		    <version>4.2</version>
+		</dependency>
+		<!--  파일 업로드 라이브러리 끝 -->
+		
+		<!-- 유효성체크 시작  -->
+		<!-- https://mvnrepository.com/artifact/javax.validation/validation-api -->
+		<dependency>
+		    <groupId>javax.validation</groupId>
+		    <artifactId>validation-api</artifactId>
+		    <version>2.0.1.Final</version>
+		</dependency>
+		
+		<!-- hibernate validator -->
+		<dependency>
+			<groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>6.1.6.Final</version>
+		</dependency>
+		<!-- 유효성체크 끝 -->
 	</dependencies>
     <build>
         <plugins>
